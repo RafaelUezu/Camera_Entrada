@@ -23,7 +23,9 @@ namespace Camera_Entrada.Model.DataBase.Json
         public void Json_Read_Parametros()
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string projectDirectory = Directory.GetParent(baseDirectory).Parent.Parent.Parent.FullName;
+
+            string projectDirectory = Directory.GetParent(baseDirectory).Parent.Parent.Parent.Parent.FullName;
+            //
             string fileName = "Model\\DataBase\\Json\\GVRL.json";
             string fullPath = Path.Combine(projectDirectory, fileName);
             System.Diagnostics.Debug.WriteLine(fullPath);
@@ -43,7 +45,7 @@ namespace Camera_Entrada.Model.DataBase.Json
         public void Json_Write_Parametros()
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string projectDirectory = Directory.GetParent(baseDirectory).Parent.Parent.Parent.FullName;
+            string projectDirectory = Directory.GetParent(baseDirectory).Parent.Parent.Parent.Parent.FullName;
             string fileName = "Model\\DataBase\\Json\\GVRL.json";
             string fullPath = Path.Combine(projectDirectory, fileName);
             string jsonContent = File.ReadAllText(fullPath);

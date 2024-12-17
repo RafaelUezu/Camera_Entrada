@@ -356,6 +356,7 @@
             button_Parametros_Teste_Registrar.TabIndex = 16;
             button_Parametros_Teste_Registrar.Text = "Teste Registrar";
             button_Parametros_Teste_Registrar.UseVisualStyleBackColor = true;
+            button_Parametros_Teste_Registrar.Click += button_Parametros_Teste_Registrar_Click;
             // 
             // label_Camera_Display_Diretorio
             // 

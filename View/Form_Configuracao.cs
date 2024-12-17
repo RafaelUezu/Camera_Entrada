@@ -1,4 +1,5 @@
 using Camera_Entrada.Model.DataBase.Json;
+using SeuNamespace;
 
 namespace Camera_Entrada
 {
@@ -65,34 +66,34 @@ namespace Camera_Entrada
         private void Carragar_Valores_dos_Parametros()
         {
             // Parâmetros Câmera
-            textBox_Parametros_Set_Bloco_de_Rede.Text   = GVRL.GVRL_Parametros.sIp_bloco_de_rede;
-            textBox_Parametros_Set_Usuario.Text         = GVRL.GVRL_Parametros.sUsuario;
-            textBox_Parametros_Set_Senha.Text           = GVRL.GVRL_Parametros.sSenha;
-            textBox_Parametros_Set_Descarte.Text        = GVRL.GVRL_Parametros.sPeriodo_de_Descarte_Imagens;
+            textBox_Parametros_Set_Bloco_de_Rede.Text = GVRL.GVRL_Parametros.sIp_bloco_de_rede;
+            textBox_Parametros_Set_Usuario.Text = GVRL.GVRL_Parametros.sUsuario;
+            textBox_Parametros_Set_Senha.Text = GVRL.GVRL_Parametros.sSenha;
+            textBox_Parametros_Set_Descarte.Text = GVRL.GVRL_Parametros.sPeriodo_de_Descarte_Imagens;
             // Status Câmera
-            label_Camera_Display_Url.Text               = GVRL.GVRL_Parametros.sUrl_Camera;
-            label_Camera_Display_Diretorio.Text         = GVRL.GVRL_Parametros.sDiretorio_de_Imagens;
+            label_Camera_Display_Url.Text = GVRL.GVRL_Parametros.sUrl_Camera;
+            label_Camera_Display_Diretorio.Text = GVRL.GVRL_Parametros.sDiretorio_de_Imagens;
             // Status OPC UA
-            label_Opcua_Display_Url.Text                = GVRL.GVRL_Parametros.sUrl_Opcua;
+            label_Opcua_Display_Url.Text = GVRL.GVRL_Parametros.sUrl_Opcua;
         }
 
         private void Salvar_Valores_dos_Parametros()
         {
-            string Parametros_Set_Bloco_de_Rede         = textBox_Parametros_Set_Bloco_de_Rede.Text;
-            string Parametros_Set_Usuario               = textBox_Parametros_Set_Usuario.Text;
-            string Parametros_Set_Senha                 = textBox_Parametros_Set_Senha.Text;
-            string Parametros_Set_Descarte              = textBox_Parametros_Set_Descarte.Text;
+            string Parametros_Set_Bloco_de_Rede = textBox_Parametros_Set_Bloco_de_Rede.Text;
+            string Parametros_Set_Usuario = textBox_Parametros_Set_Usuario.Text;
+            string Parametros_Set_Senha = textBox_Parametros_Set_Senha.Text;
+            string Parametros_Set_Descarte = textBox_Parametros_Set_Descarte.Text;
 
             // Parâmetros Câmera
-            GVRL.GVRL_Parametros.sIp_bloco_de_rede      = Parametros_Set_Bloco_de_Rede;
-            GVRL.GVRL_Parametros.sUsuario               = Parametros_Set_Usuario;
-            GVRL.GVRL_Parametros.sSenha                 = Parametros_Set_Senha;
+            GVRL.GVRL_Parametros.sIp_bloco_de_rede = Parametros_Set_Bloco_de_Rede;
+            GVRL.GVRL_Parametros.sUsuario = Parametros_Set_Usuario;
+            GVRL.GVRL_Parametros.sSenha = Parametros_Set_Senha;
             GVRL.GVRL_Parametros.sPeriodo_de_Descarte_Imagens = Parametros_Set_Descarte;
             // Status Câmera
-            GVRL.GVRL_Parametros.sUrl_Camera            = CriarUrlCamera(Parametros_Set_Usuario, Parametros_Set_Senha, Parametros_Set_Bloco_de_Rede);
+            GVRL.GVRL_Parametros.sUrl_Camera = CriarUrlCamera(Parametros_Set_Usuario, Parametros_Set_Senha, Parametros_Set_Bloco_de_Rede);
 
             // Status OPC UA
-            GVRL.GVRL_Parametros.sUrl_Opcua             = CriarUrlOpcua(Parametros_Set_Bloco_de_Rede);
+            GVRL.GVRL_Parametros.sUrl_Opcua = CriarUrlOpcua(Parametros_Set_Bloco_de_Rede);
 
             Json_Request json_Request = new Json_Request();
             json_Request.Json_Write_Parametros();
@@ -108,6 +109,15 @@ namespace Camera_Entrada
             return "rtsp://" + Usuario + ":" + Senha + "@" + Bloco_de_Rede + ".18:554/cam/realmonitor?channel=1&subtype=0";
         }
 
+        private void button_Parametros_Teste_Registrar_Click(object sender, EventArgs e)
+        {
 
+            string sUrl_Camera = GVRL.GVRL_Parametros.sUrl_Camera;
+            string sDiretorio_de_Imagens = GVRL.GVRL_Parametros.sDiretorio_de_Imagens;
+            string sIdCarga = "00117122024";
+
+            RtspImageCapture RtspImageCapture = new RtspImageCapture();
+            RtspImageCapture.CaptureImageFromRtsp(sUrl_Camera,sDiretorio_de_Imagens,sIdCarga);
+        }
     }
 }
