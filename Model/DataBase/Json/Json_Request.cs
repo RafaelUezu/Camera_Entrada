@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Camera_Entrada.ViewModel.Variaveis;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 

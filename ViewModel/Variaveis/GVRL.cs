@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Camera_Entrada.Model.DataBase.Json
+namespace Camera_Entrada.ViewModel.Variaveis
 {
     class GVRL
     {
-        public class GVRL_Parametros
+        public class Parametros
         {
             private static object lockObjectFor_sIp_bloco_de_rede = new object();
             private static string? _sIp_bloco_de_rede;

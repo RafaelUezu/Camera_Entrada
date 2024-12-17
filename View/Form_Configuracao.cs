@@ -1,4 +1,5 @@
 using Camera_Entrada.Model.DataBase.Json;
+using Camera_Entrada.ViewModel.Variaveis;
 using SeuNamespace;
 
 namespace Camera_Entrada
