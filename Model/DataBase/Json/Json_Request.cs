@@ -33,13 +33,13 @@ namespace Camera_Entrada.Model.DataBase.Json
             string jsonContent = File.ReadAllText(fullPath);
             Json_GVRL Json_GVRL_Read = JsonConvert.DeserializeObject<Json_GVRL>(jsonContent);
 
-            GVRL.GVRL_Parametros.sIp_bloco_de_rede = Json_GVRL_Read.sIp_bloco_de_rede;
-            GVRL.GVRL_Parametros.sUsuario = Json_GVRL_Read.sUsuario;
-            GVRL.GVRL_Parametros.sSenha = Json_GVRL_Read.sSenha;
-            GVRL.GVRL_Parametros.sUrl_Camera = Json_GVRL_Read.sUrl_Camera;
-            GVRL.GVRL_Parametros.sUrl_Opcua = Json_GVRL_Read.sUrl_Opcua;
-            GVRL.GVRL_Parametros.sDiretorio_de_Imagens = Json_GVRL_Read.sDiretorio_de_Imagens;
-            GVRL.GVRL_Parametros.sPeriodo_de_Descarte_Imagens = Json_GVRL_Read.sPeriodo_de_Descarte_Imagens;
+            GVRL.Parametros.sIp_bloco_de_rede = Json_GVRL_Read.sIp_bloco_de_rede;
+            GVRL.Parametros.sUsuario = Json_GVRL_Read.sUsuario;
+            GVRL.Parametros.sSenha = Json_GVRL_Read.sSenha;
+            GVRL.Parametros.sUrl_Camera = Json_GVRL_Read.sUrl_Camera;
+            GVRL.Parametros.sUrl_Opcua = Json_GVRL_Read.sUrl_Opcua;
+            GVRL.Parametros.sDiretorio_de_Imagens = Json_GVRL_Read.sDiretorio_de_Imagens;
+            GVRL.Parametros.sPeriodo_de_Descarte_Imagens = Json_GVRL_Read.sPeriodo_de_Descarte_Imagens;
 
         }
 
@@ -52,13 +52,13 @@ namespace Camera_Entrada.Model.DataBase.Json
             string jsonContent = File.ReadAllText(fullPath);
             JObject jsonParsed = JObject.Parse(jsonContent);
 
-            jsonParsed["sIp_bloco_de_rede"] = JToken.FromObject(GVRL.GVRL_Parametros.sIp_bloco_de_rede);
-            jsonParsed["sUsuario"] = JToken.FromObject(GVRL.GVRL_Parametros.sUsuario);
-            jsonParsed["sSenha"] = JToken.FromObject(GVRL.GVRL_Parametros.sSenha);
-            jsonParsed["sUrl_Camera"] = JToken.FromObject(GVRL.GVRL_Parametros.sUrl_Camera);
-            jsonParsed["sUrl_Opcua"] = JToken.FromObject(GVRL.GVRL_Parametros.sUrl_Opcua);
-            jsonParsed["sDiretorio_de_Imagens"] = JToken.FromObject(GVRL.GVRL_Parametros.sDiretorio_de_Imagens);
-            jsonParsed["sPeriodo_de_Descarte_Imagens"] = JToken.FromObject(GVRL.GVRL_Parametros.sPeriodo_de_Descarte_Imagens);
+            jsonParsed["sIp_bloco_de_rede"] = JToken.FromObject(GVRL.Parametros.sIp_bloco_de_rede);
+            jsonParsed["sUsuario"] = JToken.FromObject(GVRL.Parametros.sUsuario);
+            jsonParsed["sSenha"] = JToken.FromObject(GVRL.Parametros.sSenha);
+            jsonParsed["sUrl_Camera"] = JToken.FromObject(GVRL.Parametros.sUrl_Camera);
+            jsonParsed["sUrl_Opcua"] = JToken.FromObject(GVRL.Parametros.sUrl_Opcua);
+            jsonParsed["sDiretorio_de_Imagens"] = JToken.FromObject(GVRL.Parametros.sDiretorio_de_Imagens);
+            jsonParsed["sPeriodo_de_Descarte_Imagens"] = JToken.FromObject(GVRL.Parametros.sPeriodo_de_Descarte_Imagens);
 
             string updatedJsonContent = jsonParsed.ToString(Formatting.Indented);
             File.WriteAllText(fullPath, updatedJsonContent);

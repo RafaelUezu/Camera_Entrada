@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Sockets;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
@@ -24,6 +25,20 @@ namespace SeuNamespace
                     Directory.CreateDirectory(outputDirectory);
                 }
 
+                // Extraindo IP da URL RTSP
+                // Ex: rtsp://usuario:senha@10.10.70.18:554/cam/...
+                Uri uri = new Uri(rtspUrl);
+                string host = uri.Host; // 10.10.70.18, por exemplo
+                int port = uri.Port;    // 554, por exemplo
+
+                // Verifica a conectividade TCP antes de tentar abrir o stream
+                if (!IsRtspReachable(host, port, 3000)) // Timeout de 3 segundos
+                {
+                    System.Diagnostics.Debug.WriteLine("Não foi possível acessar a câmera RTSP (host inatingível ou porta fechada).");
+                    return false;
+
+                }
+
                 // Caminho completo da imagem
                 outputFileName = outputFileName + ".jpg";
                 string outputPath = Path.Combine(outputDirectory, outputFileName);
@@ -42,7 +57,7 @@ namespace SeuNamespace
                         }
                         else
                         {
-                            Console.WriteLine("Não foi possível capturar o frame do stream RTSP.");
+                            System.Diagnostics.Debug.WriteLine("Não foi possível capturar o frame do stream RTSP.");
                             return false;
                         }
                     }
@@ -50,7 +65,28 @@ namespace SeuNamespace
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Ocorreu um erro ao capturar a imagem: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("Ocorreu um erro ao capturar a imagem: " + ex.Message);
+                return false;
+            }
+        }
+        private static bool IsRtspReachable(string ip, int port, int timeoutMs)
+        {
+            try
+            {
+                using (var client = new TcpClient())
+                {
+                    var result = client.BeginConnect(ip, port, null, null);
+                    bool success = result.AsyncWaitHandle.WaitOne(timeoutMs);
+                    if (!success)
+                    {
+                        return false;
+                    }
+                    client.EndConnect(result);
+                    return true;
+                }
+            }
+            catch
+            {
                 return false;
             }
         }

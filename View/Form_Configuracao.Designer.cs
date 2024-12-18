@@ -53,8 +53,10 @@
             label_Opcua_Display_Url = new Label();
             label_Opcua_Legenda_Url = new Label();
             groupBox_Status_Camera = new GroupBox();
+            label_Camera_Display_Status_Camera = new Label();
+            label_Camera_Legenda_Status_Camera = new Label();
+            linkLabel_Camera_Display_Diretorio = new LinkLabel();
             button_Parametros_Teste_Registrar = new Button();
-            label_Camera_Display_Diretorio = new Label();
             label_Camera_Legenda_Diretorio = new Label();
             label_Camera_Display_Tempo_de_Registro = new Label();
             label_Camera_Legenda_Tempo_de_Registro = new Label();
@@ -73,6 +75,8 @@
             submenuToolStripMenuItem = new ToolStripMenuItem();
             testToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
+            label4 = new Label();
+            label5 = new Label();
             groupBox_Status_OPC.SuspendLayout();
             groupBox_Status_Camera.SuspendLayout();
             groupBox_Parametros_Camera.SuspendLayout();
@@ -212,7 +216,7 @@
             // label_Opcua_Legenda_xIniciaRelatorioCameraEntrada
             // 
             label_Opcua_Legenda_xIniciaRelatorioCameraEntrada.BorderStyle = BorderStyle.FixedSingle;
-            label_Opcua_Legenda_xIniciaRelatorioCameraEntrada.ForeColor = Color.White;
+            label_Opcua_Legenda_xIniciaRelatorioCameraEntrada.ForeColor = SystemColors.Info;
             label_Opcua_Legenda_xIniciaRelatorioCameraEntrada.Location = new Point(6, 389);
             label_Opcua_Legenda_xIniciaRelatorioCameraEntrada.Name = "label_Opcua_Legenda_xIniciaRelatorioCameraEntrada";
             label_Opcua_Legenda_xIniciaRelatorioCameraEntrada.Size = new Size(220, 20);
@@ -234,7 +238,7 @@
             // label_Opcua_Legenda_uNumeroCargaRelEntrada
             // 
             label_Opcua_Legenda_uNumeroCargaRelEntrada.BorderStyle = BorderStyle.FixedSingle;
-            label_Opcua_Legenda_uNumeroCargaRelEntrada.ForeColor = Color.White;
+            label_Opcua_Legenda_uNumeroCargaRelEntrada.ForeColor = SystemColors.Info;
             label_Opcua_Legenda_uNumeroCargaRelEntrada.Location = new Point(5, 415);
             label_Opcua_Legenda_uNumeroCargaRelEntrada.Name = "label_Opcua_Legenda_uNumeroCargaRelEntrada";
             label_Opcua_Legenda_uNumeroCargaRelEntrada.Size = new Size(220, 20);
@@ -256,7 +260,7 @@
             // label_Opcua_Legenda_Status
             // 
             label_Opcua_Legenda_Status.BorderStyle = BorderStyle.FixedSingle;
-            label_Opcua_Legenda_Status.ForeColor = Color.White;
+            label_Opcua_Legenda_Status.ForeColor = SystemColors.Info;
             label_Opcua_Legenda_Status.Location = new Point(5, 50);
             label_Opcua_Legenda_Status.Name = "label_Opcua_Legenda_Status";
             label_Opcua_Legenda_Status.Size = new Size(220, 20);
@@ -278,7 +282,7 @@
             // label2
             // 
             label2.BorderStyle = BorderStyle.FixedSingle;
-            label2.ForeColor = Color.White;
+            label2.ForeColor = SystemColors.Info;
             label2.Location = new Point(5, 110);
             label2.Name = "label2";
             label2.Size = new Size(220, 20);
@@ -300,7 +304,7 @@
             // label_Opcua_Legenda_Verificacao_IP
             // 
             label_Opcua_Legenda_Verificacao_IP.BorderStyle = BorderStyle.FixedSingle;
-            label_Opcua_Legenda_Verificacao_IP.ForeColor = Color.White;
+            label_Opcua_Legenda_Verificacao_IP.ForeColor = SystemColors.Info;
             label_Opcua_Legenda_Verificacao_IP.Location = new Point(5, 80);
             label_Opcua_Legenda_Verificacao_IP.Name = "label_Opcua_Legenda_Verificacao_IP";
             label_Opcua_Legenda_Verificacao_IP.Size = new Size(220, 20);
@@ -332,8 +336,12 @@
             // 
             // groupBox_Status_Camera
             // 
+            groupBox_Status_Camera.Controls.Add(label4);
+            groupBox_Status_Camera.Controls.Add(label5);
+            groupBox_Status_Camera.Controls.Add(label_Camera_Display_Status_Camera);
+            groupBox_Status_Camera.Controls.Add(label_Camera_Legenda_Status_Camera);
+            groupBox_Status_Camera.Controls.Add(linkLabel_Camera_Display_Diretorio);
             groupBox_Status_Camera.Controls.Add(button_Parametros_Teste_Registrar);
-            groupBox_Status_Camera.Controls.Add(label_Camera_Display_Diretorio);
             groupBox_Status_Camera.Controls.Add(label_Camera_Legenda_Diretorio);
             groupBox_Status_Camera.Controls.Add(label_Camera_Display_Tempo_de_Registro);
             groupBox_Status_Camera.Controls.Add(label_Camera_Legenda_Tempo_de_Registro);
@@ -347,6 +355,41 @@
             groupBox_Status_Camera.TabStop = false;
             groupBox_Status_Camera.Text = "Status da Câmera";
             // 
+            // label_Camera_Display_Status_Camera
+            // 
+            label_Camera_Display_Status_Camera.BorderStyle = BorderStyle.FixedSingle;
+            label_Camera_Display_Status_Camera.ForeColor = Color.White;
+            label_Camera_Display_Status_Camera.Location = new Point(280, 100);
+            label_Camera_Display_Status_Camera.Name = "label_Camera_Display_Status_Camera";
+            label_Camera_Display_Status_Camera.Size = new Size(115, 20);
+            label_Camera_Display_Status_Camera.TabIndex = 27;
+            label_Camera_Display_Status_Camera.Text = "Porta Indisponível";
+            label_Camera_Display_Status_Camera.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label_Camera_Legenda_Status_Camera
+            // 
+            label_Camera_Legenda_Status_Camera.BorderStyle = BorderStyle.FixedSingle;
+            label_Camera_Legenda_Status_Camera.ForeColor = SystemColors.Info;
+            label_Camera_Legenda_Status_Camera.Location = new Point(5, 100);
+            label_Camera_Legenda_Status_Camera.Name = "label_Camera_Legenda_Status_Camera";
+            label_Camera_Legenda_Status_Camera.Size = new Size(270, 20);
+            label_Camera_Legenda_Status_Camera.TabIndex = 26;
+            label_Camera_Legenda_Status_Camera.Text = "Status da Câmera";
+            label_Camera_Legenda_Status_Camera.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // linkLabel_Camera_Display_Diretorio
+            // 
+            linkLabel_Camera_Display_Diretorio.BorderStyle = BorderStyle.FixedSingle;
+            linkLabel_Camera_Display_Diretorio.LinkColor = Color.Cyan;
+            linkLabel_Camera_Display_Diretorio.Location = new Point(160, 160);
+            linkLabel_Camera_Display_Diretorio.Name = "linkLabel_Camera_Display_Diretorio";
+            linkLabel_Camera_Display_Diretorio.Size = new Size(235, 20);
+            linkLabel_Camera_Display_Diretorio.TabIndex = 25;
+            linkLabel_Camera_Display_Diretorio.TabStop = true;
+            linkLabel_Camera_Display_Diretorio.Text = "C:\\Imagem_Entrada";
+            linkLabel_Camera_Display_Diretorio.TextAlign = ContentAlignment.MiddleCenter;
+            linkLabel_Camera_Display_Diretorio.LinkClicked += linkLabel_Camera_Display_Diretorio_LinkClicked;
+            // 
             // button_Parametros_Teste_Registrar
             // 
             button_Parametros_Teste_Registrar.ForeColor = Color.Black;
@@ -358,22 +401,11 @@
             button_Parametros_Teste_Registrar.UseVisualStyleBackColor = true;
             button_Parametros_Teste_Registrar.Click += button_Parametros_Teste_Registrar_Click;
             // 
-            // label_Camera_Display_Diretorio
-            // 
-            label_Camera_Display_Diretorio.BorderStyle = BorderStyle.FixedSingle;
-            label_Camera_Display_Diretorio.ForeColor = Color.White;
-            label_Camera_Display_Diretorio.Location = new Point(160, 100);
-            label_Camera_Display_Diretorio.Name = "label_Camera_Display_Diretorio";
-            label_Camera_Display_Diretorio.Size = new Size(235, 20);
-            label_Camera_Display_Diretorio.TabIndex = 24;
-            label_Camera_Display_Diretorio.Text = "C:\\Imagem_Entrada";
-            label_Camera_Display_Diretorio.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // label_Camera_Legenda_Diretorio
             // 
             label_Camera_Legenda_Diretorio.BorderStyle = BorderStyle.FixedSingle;
             label_Camera_Legenda_Diretorio.ForeColor = Color.White;
-            label_Camera_Legenda_Diretorio.Location = new Point(5, 100);
+            label_Camera_Legenda_Diretorio.Location = new Point(5, 160);
             label_Camera_Legenda_Diretorio.Name = "label_Camera_Legenda_Diretorio";
             label_Camera_Legenda_Diretorio.Size = new Size(150, 20);
             label_Camera_Legenda_Diretorio.TabIndex = 23;
@@ -394,7 +426,7 @@
             // label_Camera_Legenda_Tempo_de_Registro
             // 
             label_Camera_Legenda_Tempo_de_Registro.BorderStyle = BorderStyle.FixedSingle;
-            label_Camera_Legenda_Tempo_de_Registro.ForeColor = Color.White;
+            label_Camera_Legenda_Tempo_de_Registro.ForeColor = SystemColors.Info;
             label_Camera_Legenda_Tempo_de_Registro.Location = new Point(5, 70);
             label_Camera_Legenda_Tempo_de_Registro.Name = "label_Camera_Legenda_Tempo_de_Registro";
             label_Camera_Legenda_Tempo_de_Registro.Size = new Size(270, 20);
@@ -544,6 +576,28 @@
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
+            // label4
+            // 
+            label4.BorderStyle = BorderStyle.FixedSingle;
+            label4.ForeColor = Color.White;
+            label4.Location = new Point(280, 130);
+            label4.Name = "label4";
+            label4.Size = new Size(115, 20);
+            label4.TabIndex = 29;
+            label4.Text = "00118122024";
+            label4.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label5
+            // 
+            label5.BorderStyle = BorderStyle.FixedSingle;
+            label5.ForeColor = SystemColors.Info;
+            label5.Location = new Point(5, 130);
+            label5.Name = "label5";
+            label5.Size = new Size(270, 20);
+            label5.TabIndex = 28;
+            label5.Text = "Id da Última Carga Registrada";
+            label5.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // Form_Configuracao
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -595,7 +649,6 @@
         private Label label_Camera_Legenda_Tempo_de_Registro;
         private Label label_Camera_Display_Tempo_de_Registro;
         private Label label_Camera_Legenda_Diretorio;
-        private Label label_Camera_Display_Diretorio;
         private GroupBox groupBox_Parametros_Camera;
         private Label label_Parametros_Legenda_Descarte;
         private Label label_Parametros_Ex_Descarte;
@@ -609,5 +662,10 @@
         private ToolStripMenuItem submenuToolStripMenuItem;
         private ToolStripMenuItem testToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
+        private LinkLabel linkLabel_Camera_Display_Diretorio;
+        private Label label_Camera_Display_Status_Camera;
+        private Label label_Camera_Legenda_Status_Camera;
+        private Label label4;
+        private Label label5;
     }
 }

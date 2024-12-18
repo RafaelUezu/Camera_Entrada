@@ -8,6 +8,10 @@ using Camera_Entrada.ViewModel.Variaveis;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Xml.Linq;
+using Opc.Ua.Client;
+using Opc.Ua;
+using System.Threading;
+using Camera_Entrada.ViewModel.Variaveis;
 
 namespace Camera_Entrada.Model.Driver.Opcua
 {
@@ -66,7 +70,7 @@ namespace Camera_Entrada.Model.Driver.Opcua
                 DataValueCollection? results_GVL_ClpCamera = null;
                 DiagnosticInfoCollection? diagnosticInfos_GVL_ClpCamera = null;
 
-                while (GVL_ExitProgram.xContinueRunning == true)
+                while (GVL.ExitProgram.xContinueRunning == true)
                 {
                     try
                     {
@@ -95,8 +99,8 @@ namespace Camera_Entrada.Model.Driver.Opcua
                                 Atribuir_OPCUA();
                                 Escrita_OPCUA();
                                 System.Diagnostics.Debug.WriteLine("Leitura Escrita com sucesso");
-                                System.Diagnostics.Debug.WriteLine("uNumeroCargaRelEntrada" + ": " + GVL_OPCUA.Read.GVL_ClpCamera.uNumeroCargaRelEntrada.ToString());
-                                System.Diagnostics.Debug.WriteLine("xIniciaRelatorioCameraEntrada" + ": " + GVL_OPCUA.Read.GVL_ClpCamera.xIniciaRelatorioCameraEntrada.ToString());
+                                System.Diagnostics.Debug.WriteLine("uNumeroCargaRelEntrada" + ": " + GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada.ToString());
+                                System.Diagnostics.Debug.WriteLine("xIniciaRelatorioCameraEntrada" + ": " + GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada.ToString());
                             }
                             catch
                             {
@@ -136,10 +140,10 @@ namespace Camera_Entrada.Model.Driver.Opcua
                 {
                     try
                     {
-                        if (GVL_OPCUA.Write.GVL_ClpCamera.Write_xIniciaRelatorioCameraEntrada == true)
+                        if (GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada == true)
                         {
-                            GVL_OPCUA.Write.GVL_ClpCamera.Write_xIniciaRelatorioCameraEntrada = false;
-                            bool valorParaEscrever = (bool)GVL_OPCUA.Write.GVL_ClpCamera.xIniciaRelatorioCameraEntrada;
+                            GVL.Opcua.Write.ClpCamera.Write_xIniciaRelatorioCameraEntrada = false;
+                            bool valorParaEscrever = (bool)GVL.Opcua.Write.ClpCamera.xIniciaRelatorioCameraEntrada;
 
                             // Criar o objeto WriteValue
                             WriteValue writeValue = new WriteValue
@@ -186,7 +190,7 @@ namespace Camera_Entrada.Model.Driver.Opcua
 
                     if (uNumeroCargaRelEntrada != null)
                     {
-                        GVL_OPCUA.Read.GVL_ClpCamera.uNumeroCargaRelEntrada = uNumeroCargaRelEntrada;
+                        GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada = uNumeroCargaRelEntrada;
                     }
                     else if (uNumeroCargaRelEntrada == null)
                     {
@@ -198,13 +202,14 @@ namespace Camera_Entrada.Model.Driver.Opcua
 
                     if (xIniciaRelatorioCameraEntrada != null)
                     {
-                        GVL_OPCUA.Read.GVL_ClpCamera.xIniciaRelatorioCameraEntrada = xIniciaRelatorioCameraEntrada;
+                        GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada = xIniciaRelatorioCameraEntrada;
                     }
                     else if (xIniciaRelatorioCameraEntrada == null)
                     {
                         System.Diagnostics.Debug.WriteLine("Erro: xIniciaRelatorioCameraEntrada is null");
                         return;
                     }
+
                 }
             }
             catch
