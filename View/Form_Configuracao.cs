@@ -2,6 +2,7 @@ using Camera_Entrada.Model.DataBase.Json;
 using Camera_Entrada.ViewModel.Variaveis;
 using SeuNamespace;
 using System.Diagnostics;
+using static Camera_Entrada.ViewModel.Variaveis.GVL;
 
 namespace Camera_Entrada
 {
@@ -113,13 +114,26 @@ namespace Camera_Entrada
 
         private void button_Parametros_Teste_Registrar_Click(object sender, EventArgs e)
         {
+            GVL.StatusCamera.sTempoRegistroCamera = "Verificando";
+            Stopwatch sw_TempoRegistroCamera = Stopwatch.StartNew();
+
+
+
 
             string sUrl_Camera = GVRL.Parametros.sUrl_Camera;
             string sDiretorio_de_Imagens = GVRL.Parametros.sDiretorio_de_Imagens;
-            string sIdCarga = "00117122024";
+            string sIdCarga = "ImagemTeste";
 
             RtspImageCapture RtspImageCapture = new RtspImageCapture();
             RtspImageCapture.CaptureImageFromRtsp(sUrl_Camera, sDiretorio_de_Imagens, sIdCarga);
+
+
+            sw_TempoRegistroCamera.Stop();
+            TimeSpan el_TempoRegistroCamera = sw_TempoRegistroCamera.Elapsed;
+            GVL.StatusCamera.sTempoRegistroCamera = el_TempoRegistroCamera.Milliseconds.ToString() + ":" + el_TempoRegistroCamera.Microseconds.ToString();
+
+            GVL.StatusCamera.sIdUltimaCarga = sIdCarga;
+
         }
 
         private void linkLabel_Camera_Display_Diretorio_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -144,6 +158,56 @@ namespace Camera_Entrada
                 MessageBox.Show("Diretório inválido ou não definido.");
             }
         }
-    
+
+        private void timer_Clock_Tela_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+
+                var sTempoRegistroCamera        = GVL.StatusCamera.sTempoRegistroCamera;
+                var xStatusCamera               = GVL.StatusCamera.xStatusCamera;
+                var sIdUltimaCarga              = GVL.StatusCamera.sIdUltimaCarga;
+
+                var sTempoCheckIp               = GVL.StatusOpcua.sTempoCheckIp;
+                var sTempoRequesicaoOpcua       = GVL.StatusOpcua.sTempoRequesicaoOpcua;
+                var xStatusOpcua                = GVL.StatusOpcua.xStatusOpcua;
+                
+                var xIniciaRelatorioCameraEntrada       = GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada;
+                var uNumeroCargaRelEntrada              = GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada;
+
+
+
+                string _sTempoRegistroCamera    = sTempoRegistroCamera != null?     sTempoRegistroCamera :          string.Empty;
+                string _sStatusCamera           = xStatusCamera != null?            xStatusCamera.ToString() :      string.Empty;
+                string _sIdUltimaCarga          = sIdUltimaCarga != null?           sIdUltimaCarga.ToString() :     string.Empty;
+
+                string _sTempoCheckIp           = sTempoCheckIp != null ?           sTempoCheckIp :                 string.Empty;
+                string _sTempoRequesicaoOpcua   = sTempoRequesicaoOpcua != null?    sTempoRequesicaoOpcua :         string.Empty;
+                string _sStatusOpcua            = xStatusOpcua != null?             xStatusOpcua.ToString() :       string.Empty;
+
+                string _sIniciaRelatorioCameraEntrada = xIniciaRelatorioCameraEntrada != null? xIniciaRelatorioCameraEntrada.ToString() : string.Empty;
+                string _sNumeroCargaRelEntrada  = uNumeroCargaRelEntrada != null? uNumeroCargaRelEntrada.ToString(): string.Empty;
+
+
+
+
+                label_Camera_Display_Tempo_de_Registro.Text     = _sTempoRegistroCamera;
+                label_Camera_Display_Status_Camera.Text         = _sStatusCamera;
+                label_Camera_Display_Id_Ultima_Carga.Text       = _sIdUltimaCarga;
+
+
+                label_Opcua_Display_Status.Text = _sStatusOpcua;
+                label_Opcua_Display_Verificacao_IP.Text = _sTempoCheckIp;
+                label_Opcua_Display_Requisicao_Opcua.Text = _sTempoRequesicaoOpcua;
+
+                label_Opcua_Display_xIniciaRelatorioCameraEntrada.Text = _sIniciaRelatorioCameraEntrada;
+                label_Opcua_Display_uNumeroCargaRelEntrada.Text = _sNumeroCargaRelEntrada;
+
+            }
+            catch
+            {
+                System.Diagnostics.Debug.WriteLine("Erro em atribuir variáveis do Status Câmera");
+            }
+        }
     }
 }

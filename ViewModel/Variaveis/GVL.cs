@@ -8,7 +8,6 @@ namespace Camera_Entrada.ViewModel.Variaveis
 {
     public class GVL
     {
-
         public class ExitProgram
         {
             private static object lockObjectFor_xContinueRunning = new object();
@@ -31,8 +30,7 @@ namespace Camera_Entrada.ViewModel.Variaveis
                 }
             }
         }
-
-        public class StatusCamer
+        public class StatusCamera
         {
             private static object lockObjectFor_xStatusCamera = new object();
             private static bool? _xStatusCamera;
@@ -53,30 +51,45 @@ namespace Camera_Entrada.ViewModel.Variaveis
                     }
                 }
             }
-            private static object lockObjectFor_sTempoStatusCamera = new object();
-            private static string? _sTempoStatusCamera;
-            public static string? sTempoStatusCamera
+            private static object lockObjectFor_sTempoRegistroCamera = new object();
+            private static string? _sTempoRegistroCamera;
+            public static string? sTempoRegistroCamera
             {
                 get
                 {
-                    lock (lockObjectFor_sTempoStatusCamera)
+                    lock (lockObjectFor_sTempoRegistroCamera)
                     {
-                        return _sTempoStatusCamera;
+                        return _sTempoRegistroCamera;
                     }
                 }
                 set
                 {
-                    lock (lockObjectFor_sTempoStatusCamera)
+                    lock (lockObjectFor_sTempoRegistroCamera)
                     {
-                        _sTempoStatusCamera = value;
+                        _sTempoRegistroCamera = value;
                     }
                 }
             }
-
+            private static object lockObjectFor_sIdUltimaCarga = new object();
+            private static string? _sIdUltimaCarga;
+            public static string? sIdUltimaCarga
+            {
+                get
+                {
+                    lock (lockObjectFor_sIdUltimaCarga)
+                    {
+                        return _sIdUltimaCarga;
+                    }
+                }
+                set
+                {
+                    lock (lockObjectFor_sIdUltimaCarga)
+                    {
+                        _sIdUltimaCarga = value;
+                    }
+                }
+            }
         }
-
-
-
         public class Tempo
         {
             private static object lockObjectFor_sDataCompleta = new object();
@@ -100,7 +113,88 @@ namespace Camera_Entrada.ViewModel.Variaveis
             }
         }
 
+        public class StatusOpcua
+        {
+            private static object lockObjectFor_xStatusIp = new object();
+            private static bool? _xStatusIp;
+            public static bool? xStatusIp
+            {
+                get
+                {
+                    lock (lockObjectFor_xStatusIp)
+                    {
+                        return _xStatusIp;
+                    }
+                }
+                set
+                {
+                    lock (lockObjectFor_xStatusIp)
+                    {
+                        _xStatusIp = value;
+                    }
+                }
+            }
+            private static object lockObjectFor_xStatusOpcua = new object();
+            private static bool? _xStatusOpcua;
+            public static bool? xStatusOpcua
+            {
+                get
+                {
+                    lock (lockObjectFor_xStatusOpcua)
+                    {
+                        return _xStatusOpcua;
+                    }
+                }
+                set
+                {
+                    lock (lockObjectFor_xStatusOpcua)
+                    {
+                        _xStatusOpcua = value;
+                    }
+                }
+            }
+            private static object lockObjectFor_sTempoCheckIp = new object();
+            private static string? _sTempoCheckIp;
+            public static string? sTempoCheckIp
+            {
+                get
+                {
+                    lock (lockObjectFor_sTempoCheckIp)
+                    {
+                        return _sTempoCheckIp;
+                    }
+                }
+                set
+                {
+                    lock (lockObjectFor_sTempoCheckIp)
+                    {
+                        _sTempoCheckIp = value;
+                    }
+                }
+            }
 
+            private static object lockObjectFor_sTempoRequesicaoOpcua = new object();
+            private static string? _sTempoRequesicaoOpcua;
+            public static string? sTempoRequesicaoOpcua
+            {
+                get
+                {
+                    lock (lockObjectFor_sTempoRequesicaoOpcua)
+                    {
+                        return _sTempoRequesicaoOpcua;
+                    }
+                }
+                set
+                {
+                    lock (lockObjectFor_sTempoRequesicaoOpcua)
+                    {
+                        _sTempoRequesicaoOpcua = value;
+                    }
+                }
+            }
+
+
+        }
 
 
         public class Opcua

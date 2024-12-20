@@ -12,24 +12,106 @@ using Opc.Ua.Client;
 using Opc.Ua;
 using System.Threading;
 using Camera_Entrada.ViewModel.Variaveis;
+using System.Net.Sockets;
+using System.Net;
 
 namespace Camera_Entrada.Model.Driver.Opcua
 {
     internal class Opcua_Client
     {
-        //private string serverURL = GVRL.Parametros.sUrl_Opcua; // Pega a URL do banco de dados
-        private string serverURL = "opc.tcp://Projetos05.sglass.local:53530/OPCUA/SimulationServer";
-        bool IP_OPC_UA_Status = false;
+        public static (string host, int port) ExtractHostAndPort(string endpoint)
+        {
+            // Verifica se a string começa com opc.tcp://
+            const string prefix = "opc.tcp://";
+            if (!endpoint.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("Endpoint inválido: não inicia com 'opc.tcp://'");
+            }
 
+            // Remove o prefixo inicial
+            string withoutScheme = endpoint.Substring(prefix.Length);
+
+            // Encontra o índice do ':', separador entre host e porta
+            int colonIndex = withoutScheme.IndexOf(':');
+            if (colonIndex < 0)
+            {
+                throw new ArgumentException("Endpoint inválido: não foi encontrada a porta após o host.");
+            }
+
+            // A partir do primeiro ':', pode existir um '/' indicando caminho adicional
+            int slashIndex = withoutScheme.IndexOf('/', colonIndex);
+            string hostPart;
+            string portPart;
+
+            if (slashIndex > 0)
+            {
+                // Temos um path adicional após a porta
+                hostPart = withoutScheme.Substring(0, colonIndex);
+                portPart = withoutScheme.Substring(colonIndex + 1, slashIndex - (colonIndex + 1));
+            }
+            else
+            {
+                // Não há path adicional, a porta vai até o fim da string
+                hostPart = withoutScheme.Substring(0, colonIndex);
+                portPart = withoutScheme.Substring(colonIndex + 1);
+            }
+
+            // Converte a porta para inteiro
+            if (!int.TryParse(portPart, out int port))
+            {
+                throw new ArgumentException("A porta não é um número válido.");
+            }
+
+            return (hostPart, port);
+        }
+        private static bool IsRtspReachable(string ip, int port, int timeoutMs)
+        {
+            try
+            {
+                using (var client = new TcpClient())
+                {
+                    var result = client.BeginConnect(ip, port, null, null);
+                    bool success = result.AsyncWaitHandle.WaitOne(timeoutMs);
+                    if (!success)
+                    {
+                        return false;
+                    }
+                    client.EndConnect(result);
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public string ExtrairIP(string endereco)
         {
             var ipSemProtocolo = endereco.Replace("opc.tcp://", ""); // Remove o protocolo
             var ipFinal = ipSemProtocolo.Split(':')[0]; // Remove a porta e qualquer coisa após ela
             return ipFinal;
         }
+        //private string serverURL = GVRL.Parametros.sUrl_Opcua; // Pega a URL do banco de dados
+        private string serverURL = "opc.tcp://DESKTOP-74QKTPN:53530/OPCUA/SimulationServer";
+        bool IP_OPC_UA_Status = false;
+
+
 
         public void Start_OPCUA()
         {
+
+            var Host = ExtractHostAndPort(serverURL);
+  
+
+
+            if (!IsRtspReachable(Host.host, Host.port, 3000)) // Timeout de 3 segundos
+            {
+                System.Diagnostics.Debug.WriteLine("Não foi possível acessar o server OPCUA (host inatingível ou porta fechada).");
+                GVL.StatusOpcua.xStatusOpcua = false;
+                GVL.StatusOpcua.sTempoCheckIp = "Falha na Conexão";
+                return;
+            }
+
             try
             {
                 Opc.Ua.ApplicationConfiguration configuration = new Opc.Ua.ApplicationConfiguration();
@@ -70,12 +152,17 @@ namespace Camera_Entrada.Model.Driver.Opcua
                 DataValueCollection? results_GVL_ClpCamera = null;
                 DiagnosticInfoCollection? diagnosticInfos_GVL_ClpCamera = null;
 
+                Ping pingSender = new Ping();
+                PingOptions options = new PingOptions();
+
+
                 while (GVL.ExitProgram.xContinueRunning == true)
                 {
                     try
                     {
-                        Ping pingSender = new Ping();
-                        PingOptions options = new PingOptions();
+                        Stopwatch sw_TempoCheckIp = Stopwatch.StartNew();
+                        GVL.StatusOpcua.sTempoCheckIp = "Em Leitura";
+
                         int timeout = 1000;
                         string host = ExtrairIP(serverURL);
                         byte[] buffer = new byte[32];
@@ -84,26 +171,42 @@ namespace Camera_Entrada.Model.Driver.Opcua
                         if (reply.Status == IPStatus.Success)
                         {
                             IP_OPC_UA_Status = true;
+                            GVL.StatusOpcua.xStatusIp = true;
                         }
                         else
                         {
                             IP_OPC_UA_Status = false;
-                            IP_OPC_UA_Status = true; // Teste, tirar depois
+                            GVL.StatusOpcua.xStatusIp = false;
                         }
+
+                        sw_TempoCheckIp.Stop();
+                        TimeSpan el_TempoCheckIp = sw_TempoCheckIp.Elapsed;
+                        GVL.StatusOpcua.sTempoCheckIp = el_TempoCheckIp.Milliseconds.ToString() + ":" + el_TempoCheckIp.Microseconds.ToString();
 
                         if (IP_OPC_UA_Status == true)
                         {
                             try
                             {
+                                Stopwatch sw_TempoRequesicaoOpcua = Stopwatch.StartNew();
+                                GVL.StatusOpcua.sTempoRequesicaoOpcua = "Em requisição";
+
+
                                 Leitura_OPCUA();
                                 Atribuir_OPCUA();
                                 Escrita_OPCUA();
+                                //session.Close();
                                 System.Diagnostics.Debug.WriteLine("Leitura Escrita com sucesso");
                                 System.Diagnostics.Debug.WriteLine("uNumeroCargaRelEntrada" + ": " + GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada.ToString());
                                 System.Diagnostics.Debug.WriteLine("xIniciaRelatorioCameraEntrada" + ": " + GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada.ToString());
+
+                                sw_TempoRequesicaoOpcua.Stop();
+                                TimeSpan el_TempoRequesicaoOpcua = sw_TempoRequesicaoOpcua.Elapsed;
+                                GVL.StatusOpcua.sTempoRequesicaoOpcua = el_TempoRequesicaoOpcua.Milliseconds.ToString() + ":" + el_TempoRequesicaoOpcua.Microseconds.ToString();
                             }
                             catch
                             {
+                                GVL.StatusOpcua.sTempoRequesicaoOpcua = "Falha na requisição";
+                                GVL.StatusOpcua.xStatusOpcua = false;
                                 System.Diagnostics.Debug.WriteLine("Erro na leitura do OPC UA - Nível 1 - Execução de leitura e escrita");
                                 return;
                             }
@@ -112,6 +215,9 @@ namespace Camera_Entrada.Model.Driver.Opcua
                     }
                     catch
                     {
+                        GVL.StatusOpcua.sTempoRequesicaoOpcua = "Falha na conexão";
+                        GVL.StatusOpcua.sTempoCheckIp = "Falha na conexão";
+                        GVL.StatusOpcua.xStatusOpcua = false;
                         return;
                         System.Diagnostics.Debug.WriteLine("Erro na leitura do OPC UA - Nível 2 - Conexão");
                     }
@@ -119,13 +225,6 @@ namespace Camera_Entrada.Model.Driver.Opcua
 
                 void Leitura_OPCUA()
                 {
-
-                    // Leitura
-
-                    Stopwatch stopwatch_Requisicao = Stopwatch.StartNew();
-
-                    // Leitura do vetor B_RampaPatamar
-
                     ReadValueIdCollection nodesToReadCollection_GVL_ClpCamera = new ReadValueIdCollection(nodesToRead_GVL_ClpCamera);
                     session.Read(
                                 requestHeader_GVL_ClpCamera,
@@ -143,6 +242,12 @@ namespace Camera_Entrada.Model.Driver.Opcua
                         if (GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada == true)
                         {
                             GVL.Opcua.Write.ClpCamera.Write_xIniciaRelatorioCameraEntrada = false;
+
+                            if(GVL.Opcua.Write.ClpCamera.xIniciaRelatorioCameraEntrada == null)
+                            {
+                                return;
+                            }
+
                             bool valorParaEscrever = (bool)GVL.Opcua.Write.ClpCamera.xIniciaRelatorioCameraEntrada;
 
                             // Criar o objeto WriteValue
@@ -186,11 +291,11 @@ namespace Camera_Entrada.Model.Driver.Opcua
                 void Atribuir_OPCUA()
                 {
 
-                    var uNumeroCargaRelEntrada = (short)(UInt16)results_GVL_ClpCamera[0].Value;
+                    var uNumeroCargaRelEntrada = results_GVL_ClpCamera[0].Value;
 
                     if (uNumeroCargaRelEntrada != null)
                     {
-                        GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada = uNumeroCargaRelEntrada;
+                        GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada = (short)(UInt16)uNumeroCargaRelEntrada;
                     }
                     else if (uNumeroCargaRelEntrada == null)
                     {
@@ -198,11 +303,11 @@ namespace Camera_Entrada.Model.Driver.Opcua
                         return;
                     }
 
-                    var xIniciaRelatorioCameraEntrada = (bool)results_GVL_ClpCamera[1].Value;
+                    var xIniciaRelatorioCameraEntrada = results_GVL_ClpCamera[1].Value;
 
                     if (xIniciaRelatorioCameraEntrada != null)
                     {
-                        GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada = xIniciaRelatorioCameraEntrada;
+                        GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada = (bool)xIniciaRelatorioCameraEntrada;
                     }
                     else if (xIniciaRelatorioCameraEntrada == null)
                     {
@@ -215,7 +320,9 @@ namespace Camera_Entrada.Model.Driver.Opcua
             catch
             {
                 System.Diagnostics.Debug.WriteLine("Erro na leitura do OPC UA - Nível 3 - Execução da criação do driver");
+                GVL.StatusOpcua.xStatusOpcua = false;
                 return;
+                
             }
         }
     }
