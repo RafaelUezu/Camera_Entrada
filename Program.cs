@@ -39,11 +39,6 @@ namespace Camera_Entrada
             Application.ApplicationExit += new EventHandler(OnApplicationExit);
             Application.Run(new Form_Configuracao());
 
-
-
-
-
-
         }
         private static void InicialicaVariaveisGlobaisPrograma()
         {

@@ -522,6 +522,7 @@
             button_Parametros_Teste_Descarte.TabIndex = 15;
             button_Parametros_Teste_Descarte.Text = "Teste Descarte";
             button_Parametros_Teste_Descarte.UseVisualStyleBackColor = true;
+            button_Parametros_Teste_Descarte.Click += button_Parametros_Teste_Descarte_Click;
             // 
             // label_Parametros_Ex_Descarte
             // 
@@ -565,6 +566,7 @@
             // 
             timer_Clock_Descarte.Enabled = true;
             timer_Clock_Descarte.Interval = 86400000;
+            timer_Clock_Descarte.Tick += timer_Clock_Descarte_Tick;
             // 
             // notifyIcon
             // 

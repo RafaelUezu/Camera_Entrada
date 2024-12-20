@@ -202,6 +202,7 @@ namespace Camera_Entrada.Model.Driver.Opcua
                                 sw_TempoRequesicaoOpcua.Stop();
                                 TimeSpan el_TempoRequesicaoOpcua = sw_TempoRequesicaoOpcua.Elapsed;
                                 GVL.StatusOpcua.sTempoRequesicaoOpcua = el_TempoRequesicaoOpcua.Milliseconds.ToString() + ":" + el_TempoRequesicaoOpcua.Microseconds.ToString();
+                                GVL.StatusOpcua.xStatusOpcua = true;
                             }
                             catch
                             {

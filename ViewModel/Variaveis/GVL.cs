@@ -32,6 +32,25 @@ namespace Camera_Entrada.ViewModel.Variaveis
         }
         public class StatusCamera
         {
+            private static object lockObjectFor_xTesteIniciaRelatorioCameraEntrada = new object();
+            private static bool? _xTesteIniciaRelatorioCameraEntrada;
+            public static bool? xTesteIniciaRelatorioCameraEntrada
+            {
+                get
+                {
+                    lock (lockObjectFor_xTesteIniciaRelatorioCameraEntrada)
+                    {
+                        return _xTesteIniciaRelatorioCameraEntrada;
+                    }
+                }
+                set
+                {
+                    lock (lockObjectFor_xTesteIniciaRelatorioCameraEntrada)
+                    {
+                        _xTesteIniciaRelatorioCameraEntrada = value;
+                    }
+                }
+            }
             private static object lockObjectFor_xStatusCamera = new object();
             private static bool? _xStatusCamera;
             public static bool? xStatusCamera

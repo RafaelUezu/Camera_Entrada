@@ -27,22 +27,50 @@ namespace SeuNamespace
                 {
                     try
                     {
+                        string rtspUrl = GVRL.Parametros.sUrl_Camera;
+                        string outputDirectory = GVRL.Parametros.sDiretorio_de_Imagens;
+                        Uri uri = new Uri(rtspUrl);
+                        string host = uri.Host; // 10.10.70.18, por exemplo
+                        int port = uri.Port;    // 554, por exemplo
+
+                        // Verifica a conectividade TCP antes de tentar abrir o stream
+                        bool IpConected = IsRtspReachable(host, port, 6000);
+
+                        
                         var Disparo_CaptureImageFromRtsp = GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada;
-                        if (Disparo_CaptureImageFromRtsp == null)
-                        {
-                            return;
-                        }
-                        else if ((bool)Disparo_CaptureImageFromRtsp)
-                        {
-                            DateTime dataAtual = DateTime.Now;
-                            string rtspUrl = GVRL.Parametros.sUrl_Camera;
-                            string outputDirectory = GVRL.Parametros.sDiretorio_de_Imagens;
-                            int NumeroCargaEntrada = (int)GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada;
-                            string IdCargaEntrada = MontaIdCarga(NumeroCargaEntrada);
+                        var Teste_CaptureImageFromRtsp = GVL.StatusCamera.xTesteIniciaRelatorioCameraEntrada;
 
+                        if (IpConected)
+                        {
+                            GVL.StatusCamera.xStatusCamera = true;
+                            if (Disparo_CaptureImageFromRtsp != null)
+                            {
+                                if ((bool)Disparo_CaptureImageFromRtsp == true)
+                                {
+                                    DateTime dataAtual = DateTime.Now;
+                                    int NumeroCargaEntrada = (int)GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada;
+                                    string IdCargaEntrada = MontaIdCarga(NumeroCargaEntrada);
+                                    //Random rnd = new Random();
+                                    //int valor = rnd.Next(1, 13); // Gera um inteiro entre 1 e 12
+                                    //string valorFormatado = valor.ToString("00");
+                                    //IdCargaEntrada = "11120" + valorFormatado + "2024";
+                                    CaptureImageFromRtsp(rtspUrl, outputDirectory, IdCargaEntrada);
+                                }
+                            }
+                            if (Teste_CaptureImageFromRtsp != null)
+                            {
+                                if ((bool)Teste_CaptureImageFromRtsp == true)
+                                {
 
-                            CaptureImageFromRtsp(rtspUrl, outputDirectory, IdCargaEntrada);
+                                    CaptureImageFromRtsp(rtspUrl, outputDirectory, "ImagemTeste");
+                                }
+                            }
                         }
+                        else
+                        {
+                            GVL.StatusCamera.xStatusCamera = false;
+                        }
+                        Thread.Sleep(1000);
                     }
                     catch
                     {
@@ -80,10 +108,11 @@ namespace SeuNamespace
         {
             try
             {
+                Stopwatch sw_TempoCaptureImage = Stopwatch.StartNew();
 
                 GVL.Opcua.Write.ClpCamera.xIniciaRelatorioCameraEntrada = false;
                 GVL.Opcua.Write.ClpCamera.Write_xIniciaRelatorioCameraEntrada = false;
-
+                GVL.StatusCamera.xTesteIniciaRelatorioCameraEntrada = false;
                 // Extraindo IP da URL RTSP
                 // Ex: rtsp://usuario:senha@10.10.70.18:554/cam/...
                 Uri uri = new Uri(rtspUrl);
@@ -92,12 +121,12 @@ namespace SeuNamespace
 
                 // Verifica a conectividade TCP antes de tentar abrir o stream
 
-                if (!IsRtspReachable(host, port, 3000)) // Timeout de 3 segundos
+                if (!IsRtspReachable(host, port, 6000)) // Timeout de 3 segundos
                 {
                     System.Diagnostics.Debug.WriteLine("Não foi possível acessar a câmera RTSP (host inatingível ou porta fechada).");
-                    return false;
                     GVL.StatusCamera.xStatusCamera = false;
                     GVL.StatusCamera.sTempoRegistroCamera = "Falha na Conexão";
+                    return false;
                 }
                 GVL.StatusCamera.xStatusCamera = true;
                 // Cria o diretório se não existir
@@ -107,8 +136,8 @@ namespace SeuNamespace
                 }
 
                 // Caminho completo da imagem
-                outputFileName = outputFileName + ".jpg";
-                string outputPath = Path.Combine(outputDirectory, outputFileName);
+                string outputFileName_ext = outputFileName + ".jpg";
+                string outputPath = Path.Combine(outputDirectory, outputFileName_ext);
 
                 // Inicializa a captura
                 using (VideoCapture capture = new VideoCapture(rtspUrl))
@@ -120,6 +149,11 @@ namespace SeuNamespace
                         if (!frame.IsEmpty)
                         {
                             frame.Save(outputPath);
+                            GVL.StatusCamera.xStatusCamera = true;
+                            GVL.StatusCamera.sIdUltimaCarga = outputFileName;
+                            sw_TempoCaptureImage.Stop();
+                            TimeSpan el_TempoCaptureImage = sw_TempoCaptureImage.Elapsed;
+                            GVL.StatusCamera.sTempoRegistroCamera = el_TempoCaptureImage.Milliseconds.ToString() + ":" + el_TempoCaptureImage.Microseconds.ToString();
                             return true;
                         }
                         else

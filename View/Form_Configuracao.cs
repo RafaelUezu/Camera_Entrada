@@ -3,7 +3,7 @@ using Camera_Entrada.ViewModel.Variaveis;
 using SeuNamespace;
 using System.Diagnostics;
 using static Camera_Entrada.ViewModel.Variaveis.GVL;
-
+using Camera_Entrada.Model.DataBase.Image;
 namespace Camera_Entrada
 {
     public partial class Form_Configuracao : Form
@@ -114,25 +114,8 @@ namespace Camera_Entrada
 
         private void button_Parametros_Teste_Registrar_Click(object sender, EventArgs e)
         {
-            GVL.StatusCamera.sTempoRegistroCamera = "Verificando";
-            Stopwatch sw_TempoRegistroCamera = Stopwatch.StartNew();
 
-
-
-
-            string sUrl_Camera = GVRL.Parametros.sUrl_Camera;
-            string sDiretorio_de_Imagens = GVRL.Parametros.sDiretorio_de_Imagens;
-            string sIdCarga = "ImagemTeste";
-
-            RtspImageCapture RtspImageCapture = new RtspImageCapture();
-            RtspImageCapture.CaptureImageFromRtsp(sUrl_Camera, sDiretorio_de_Imagens, sIdCarga);
-
-
-            sw_TempoRegistroCamera.Stop();
-            TimeSpan el_TempoRegistroCamera = sw_TempoRegistroCamera.Elapsed;
-            GVL.StatusCamera.sTempoRegistroCamera = el_TempoRegistroCamera.Milliseconds.ToString() + ":" + el_TempoRegistroCamera.Microseconds.ToString();
-
-            GVL.StatusCamera.sIdUltimaCarga = sIdCarga;
+            GVL.StatusCamera.xTesteIniciaRelatorioCameraEntrada = true;
 
         }
 
@@ -164,36 +147,36 @@ namespace Camera_Entrada
             try
             {
 
-                var sTempoRegistroCamera        = GVL.StatusCamera.sTempoRegistroCamera;
-                var xStatusCamera               = GVL.StatusCamera.xStatusCamera;
-                var sIdUltimaCarga              = GVL.StatusCamera.sIdUltimaCarga;
+                var sTempoRegistroCamera = GVL.StatusCamera.sTempoRegistroCamera;
+                var xStatusCamera = GVL.StatusCamera.xStatusCamera;
+                var sIdUltimaCarga = GVL.StatusCamera.sIdUltimaCarga;
 
-                var sTempoCheckIp               = GVL.StatusOpcua.sTempoCheckIp;
-                var sTempoRequesicaoOpcua       = GVL.StatusOpcua.sTempoRequesicaoOpcua;
-                var xStatusOpcua                = GVL.StatusOpcua.xStatusOpcua;
-                
-                var xIniciaRelatorioCameraEntrada       = GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada;
-                var uNumeroCargaRelEntrada              = GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada;
+                var sTempoCheckIp = GVL.StatusOpcua.sTempoCheckIp;
+                var sTempoRequesicaoOpcua = GVL.StatusOpcua.sTempoRequesicaoOpcua;
+                var xStatusOpcua = GVL.StatusOpcua.xStatusOpcua;
 
-
-
-                string _sTempoRegistroCamera    = sTempoRegistroCamera != null?     sTempoRegistroCamera :          string.Empty;
-                string _sStatusCamera           = xStatusCamera != null?            xStatusCamera.ToString() :      string.Empty;
-                string _sIdUltimaCarga          = sIdUltimaCarga != null?           sIdUltimaCarga.ToString() :     string.Empty;
-
-                string _sTempoCheckIp           = sTempoCheckIp != null ?           sTempoCheckIp :                 string.Empty;
-                string _sTempoRequesicaoOpcua   = sTempoRequesicaoOpcua != null?    sTempoRequesicaoOpcua :         string.Empty;
-                string _sStatusOpcua            = xStatusOpcua != null?             xStatusOpcua.ToString() :       string.Empty;
-
-                string _sIniciaRelatorioCameraEntrada = xIniciaRelatorioCameraEntrada != null? xIniciaRelatorioCameraEntrada.ToString() : string.Empty;
-                string _sNumeroCargaRelEntrada  = uNumeroCargaRelEntrada != null? uNumeroCargaRelEntrada.ToString(): string.Empty;
+                var xIniciaRelatorioCameraEntrada = GVL.Opcua.Read.ClpCamera.xIniciaRelatorioCameraEntrada;
+                var uNumeroCargaRelEntrada = GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada;
 
 
 
+                string _sTempoRegistroCamera = sTempoRegistroCamera != null ? sTempoRegistroCamera : string.Empty;
+                string _sStatusCamera = xStatusCamera != null ? xStatusCamera.ToString() : string.Empty;
+                string _sIdUltimaCarga = sIdUltimaCarga != null ? sIdUltimaCarga.ToString() : string.Empty;
 
-                label_Camera_Display_Tempo_de_Registro.Text     = _sTempoRegistroCamera;
-                label_Camera_Display_Status_Camera.Text         = _sStatusCamera;
-                label_Camera_Display_Id_Ultima_Carga.Text       = _sIdUltimaCarga;
+                string _sTempoCheckIp = sTempoCheckIp != null ? sTempoCheckIp : string.Empty;
+                string _sTempoRequesicaoOpcua = sTempoRequesicaoOpcua != null ? sTempoRequesicaoOpcua : string.Empty;
+                string _sStatusOpcua = xStatusOpcua != null ? xStatusOpcua.ToString() : string.Empty;
+
+                string _sIniciaRelatorioCameraEntrada = xIniciaRelatorioCameraEntrada != null ? xIniciaRelatorioCameraEntrada.ToString() : string.Empty;
+                string _sNumeroCargaRelEntrada = uNumeroCargaRelEntrada != null ? uNumeroCargaRelEntrada.ToString() : string.Empty;
+
+
+
+
+                label_Camera_Display_Tempo_de_Registro.Text = _sTempoRegistroCamera;
+                label_Camera_Display_Status_Camera.Text = _sStatusCamera;
+                label_Camera_Display_Id_Ultima_Carga.Text = _sIdUltimaCarga;
 
 
                 label_Opcua_Display_Status.Text = _sStatusOpcua;
@@ -208,6 +191,20 @@ namespace Camera_Entrada
             {
                 System.Diagnostics.Debug.WriteLine("Erro em atribuir variáveis do Status Câmera");
             }
+        }
+
+        private void timer_Clock_Descarte_Tick(object sender, EventArgs e)
+        {
+            string sDiretorio = GVRL.Parametros.sDiretorio_de_Imagens;
+            string sMeses = GVRL.Parametros.sPeriodo_de_Descarte_Imagens;
+            Int32.TryParse(sMeses, out int iMeses);
+            ImageCleaner ImageCleaner = new ImageCleaner();
+            ImageCleaner.ApagarImagensAntigas(sDiretorio, iMeses);
+        }
+
+        private void button_Parametros_Teste_Descarte_Click(object sender, EventArgs e)
+        {
+            timer_Clock_Descarte_Tick(sender, e);
         }
     }
 }
