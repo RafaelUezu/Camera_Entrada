@@ -1,9 +1,9 @@
 {
-  "sIp_bloco_de_rede": "10.10.70",
+  "sIp_bloco_de_rede": "10.10.73",
   "sUsuario": "admin",
   "sSenha": "tvsglass123",
-  "sUrl_Camera": "rtsp://admin:tvsglass123@10.10.70.18:554/cam/realmonitor?channel=1&subtype=0",
-  "sUrl_Opcua": "opc.tcp://10.10.70.10:4840",
+  "sUrl_Camera": "rtsp://admin:tvsglass123@10.10.73.18:554/cam/realmonitor?channel=1&subtype=0",
+  "sUrl_Opcua": "opc.tcp://10.10.73.10:4840",
   "sDiretorio_de_Imagens": "C:\\Imagem_Entrada",
   "sPeriodo_de_Descarte_Imagens": "3"
 }

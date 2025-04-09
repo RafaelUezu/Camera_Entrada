@@ -91,8 +91,8 @@ namespace Camera_Entrada.Model.Driver.Opcua
             var ipFinal = ipSemProtocolo.Split(':')[0]; // Remove a porta e qualquer coisa após ela
             return ipFinal;
         }
-        //private string serverURL = GVRL.Parametros.sUrl_Opcua; // Pega a URL do banco de dados
-        private string serverURL = "opc.tcp://DESKTOP-74QKTPN:53530/OPCUA/SimulationServer";
+        private string serverURL = GVRL.Parametros.sUrl_Opcua; // Pega a URL do banco de dados
+        //private string serverURL = "opc.tcp://Projetos05.sglass.local:53530/OPCUA/SimulationServer";
         bool IP_OPC_UA_Status = false;
 
 
