@@ -82,7 +82,7 @@ namespace Camera_Entrada.Model.Driver.Opcua
             }
             catch
             {
-                return false;
+                return true;
             }
         }
         public string ExtrairIP(string endereco)
@@ -142,8 +142,8 @@ namespace Camera_Entrada.Model.Driver.Opcua
 
                 List<ReadValueId> nodesToRead_GVL_ClpCamera = new List<ReadValueId>
                 {
-                    new ReadValueId { NodeId = NodeId.Parse("ns=3;s=Application.GVL_ClpCamera.uNumeroCargaRelEntrada"), AttributeId = Attributes.Value },//0
-                    new ReadValueId { NodeId = NodeId.Parse("ns=3;s=Application.GVL_ClpCamera.xIniciaRelatorioCameraEntrada"), AttributeId = Attributes.Value },//1
+                    new ReadValueId { NodeId = NodeId.Parse("ns=2;s=Application.GVL_ClpSuper.xIniciaRelatorioCameraMe"), AttributeId = Attributes.Value },//0
+                    new ReadValueId { NodeId = NodeId.Parse("ns=2;s=Application.GVL_ClpSuper.uNumeroCargaRelMe"), AttributeId = Attributes.Value },//1
                 };
 
                 RequestHeader requestHeader_GVL_ClpCamera = new RequestHeader();
@@ -254,7 +254,7 @@ namespace Camera_Entrada.Model.Driver.Opcua
                             // Criar o objeto WriteValue
                             WriteValue writeValue = new WriteValue
                             {
-                                NodeId = NodeId.Parse("ns=3;s=Application.GVL_ClpCamera.xIniciaRelatorioCameraEntrada"),
+                                NodeId = NodeId.Parse("ns=2;s=Application.GVL_ClpSuper.xIniciaRelatorioCameraMe"),
                                 AttributeId = Attributes.Value,
                                 Value = new DataValue(new Variant(valorParaEscrever))
                             };
@@ -292,19 +292,9 @@ namespace Camera_Entrada.Model.Driver.Opcua
                 void Atribuir_OPCUA()
                 {
 
-                    var uNumeroCargaRelEntrada = results_GVL_ClpCamera[0].Value;
 
-                    if (uNumeroCargaRelEntrada != null)
-                    {
-                        GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada = (short)(UInt16)uNumeroCargaRelEntrada;
-                    }
-                    else if (uNumeroCargaRelEntrada == null)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Erro: uNumeroCargaRelEntrada is null");
-                        return;
-                    }
 
-                    var xIniciaRelatorioCameraEntrada = results_GVL_ClpCamera[1].Value;
+                    var xIniciaRelatorioCameraEntrada = results_GVL_ClpCamera[0].Value;
 
                     if (xIniciaRelatorioCameraEntrada != null)
                     {
@@ -313,6 +303,18 @@ namespace Camera_Entrada.Model.Driver.Opcua
                     else if (xIniciaRelatorioCameraEntrada == null)
                     {
                         System.Diagnostics.Debug.WriteLine("Erro: xIniciaRelatorioCameraEntrada is null");
+                        return;
+                    }
+
+                    var uNumeroCargaRelEntrada = results_GVL_ClpCamera[1].Value;
+
+                    if (uNumeroCargaRelEntrada != null)
+                    {
+                        GVL.Opcua.Read.ClpCamera.uNumeroCargaRelEntrada = (short)(UInt16)uNumeroCargaRelEntrada;
+                    }
+                    else if (uNumeroCargaRelEntrada == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Erro: uNumeroCargaRelEntrada is null");
                         return;
                     }
 
